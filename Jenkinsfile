@@ -22,29 +22,25 @@ pipeline {
             steps {
                 sh 'mvn test'
             }
-            post {
-                always {
-                    publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
-                }
-            }
+            
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                sh 'mvn clean package'
             }
         }
 
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests'
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                }
-            }
-        }
+        // stage('Package') {
+        //     steps {
+        //         sh 'mvn package -DskipTests'
+        //     }
+        //     post {
+        //         success {
+        //             archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        //         }
+        //     }
+        // }
 
         stage('SonarQube Analysis') {
             steps {
@@ -58,29 +54,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to Staging') {
-            steps {
-                echo 'Deploying to staging environment...'
-                sh '''
-                    echo "Application packaged successfully: $(ls -la target/*.jar)"
-                    echo "Deployment to staging completed"
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        unstable {
-            echo 'Pipeline completed with test failures!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
     }
 }
+
+    
