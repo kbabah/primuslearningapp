@@ -15,16 +15,15 @@ pipeline {
         }
     }
 
-  stage('Build') {
-    steps {
-        sh "mvn clean compile"
-      // One or more steps need to be included within the steps block.
+        stage('Build') {
+            steps {
+                sh "mvn clean compile"
+        }
     }
-  }
-  
-  stage("build & SonarQube analysis") {
-        steps {
-              withSonarQubeEnv('sonaqube') {
+
+        stage("build & SonarQube analysis") {
+            steps {
+                withSonarQubeEnv('sonaqube') {
                 sh 'mvn sonar:sonar'
               }
             }
