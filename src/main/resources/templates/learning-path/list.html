@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Learning Paths - PrimusLearning</title>
+</head>
+<body>
+    <div th:fragment="content" class="main-content">
+        <div class="container-fluid">
+            <div class="py-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 mb-1">Learning Paths</h1>
+                        <p class="text-muted mb-0">Discover and enroll in learning paths to advance your skills.</p>
+                    </div>
+                    <div sec:authorize="hasRole('USER') or hasRole('ADMIN')">
+                        <a th:href="@{/learning-paths/create}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Learning Path
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Search and Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="@{/learning-paths}" method="get" class="row g-3">
+                            <div class="col-md-4">
+                                <label for="search" class="form-label">Search</label>
+                                <input type="text" class="form-control" id="search" name="search" 
+                                       th:value="${search}" placeholder="Search by title or description">
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label for="difficulty" class="form-label">Difficulty</label>
+                                <select class="form-select" id="difficulty" name="difficulty">
+                                    <option value="">All Levels</option>
+                                    <option th:each="diff : ${difficulties}" 
+                                            th:value="${diff}" 
+                                            th:text="${diff}"
+                                            th:selected="${selectedDifficulty == diff.toString()}"></option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label for="tag" class="form-label">Tag</label>
+                                <select class="form-select" id="tag" name="tag">
+                                    <option value="">All Tags</option>
+                                    <option th:each="tagOption : ${availableTags}" 
+                                            th:value="${tagOption}" 
+                                            th:text="${tagOption}"
+                                            th:selected="${selectedTag == tagOption}"></option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label for="sortBy" class="form-label">Sort By</label>
+                                <select class="form-select" id="sortBy" name="sortBy">
+                                    <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Date Created</option>
+                                    <option value="title" th:selected="${sortBy == 'title'}">Title</option>
+                                    <option value="estimatedDurationHours" th:selected="${sortBy == 'estimatedDurationHours'}">Duration</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2 d-flex align-items-end">
+                                <div class="btn-group w-100" role="group">
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <a th:href="@{/learning-paths}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Results Info -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span th:text="${totalElements}">0</span> learning paths found
+                        <span th:if="${search}" class="text-muted">
+                            for "<span th:text="${search}"></span>"
+                        </span>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <input type="radio" class="btn-check" name="sortDir" id="asc" 
+                               th:checked="${sortDir == 'asc'}" autocomplete="off">
+                        <label class="btn btn-outline-secondary" for="asc" 
+                               th:onclick="'updateSort(\'asc\')'">
+                            <i class="fas fa-sort-alpha-down"></i>
+                        </label>
+                        
+                        <input type="radio" class="btn-check" name="sortDir" id="desc" 
+                               th:checked="${sortDir == 'desc'}" autocomplete="off">
+                        <label class="btn btn-outline-secondary" for="desc" 
+                               th:onclick="'updateSort(\'desc\')'">
+                            <i class="fas fa-sort-alpha-up"></i>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Learning Paths Grid -->
+                <div class="row g-4" th:if="${not #lists.isEmpty(learningPaths.content)}">
+                    <div class="col-md-6 col-lg-4" th:each="learningPath : ${learningPaths.content}">
+                        <div class="card learning-path-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title">
+                                        <a th:href="@{/learning-paths/{id}(id=${learningPath.id})}" 
+                                           class="text-decoration-none" th:text="${learningPath.title}">
+                                            Learning Path Title
+                                        </a>
+                                    </h5>
+                                    <span class="badge" 
+                                          th:classappend="'status-' + ${learningPath.status}"
+                                          th:text="${learningPath.status}">
+                                        Status
+                                    </span>
+                                </div>
+                                
+                                <p class="card-text text-muted small" 
+                                   th:text="${#strings.abbreviate(learningPath.description, 100)}">
+                                    Learning path description...
+                                </p>
+                                
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <span class="badge difficulty-BEGINNER" 
+                                              th:classappend="'difficulty-' + ${learningPath.difficulty}"
+                                              th:text="${learningPath.difficulty}">
+                                            Beginner
+                                        </span>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>
+                                            <span th:text="${learningPath.formattedDuration}">40 hours</span>
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3" th:if="${not #lists.isEmpty(learningPath.tags)}">
+                                    <span class="badge bg-light text-dark me-1" 
+                                          th:each="tag : ${learningPath.tags}" 
+                                          th:text="${tag}">Tag</span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-user me-1"></i>
+                                        <span th:text="${learningPath.creator.fullName}">Creator</span>
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="fas fa-users me-1"></i>
+                                        <span th:text="${learningPath.enrollmentCount}">0</span> enrolled
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer bg-transparent">
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{/learning-paths/{id}(id=${learningPath.id})}" 
+                                       class="btn btn-primary btn-sm flex-grow-1">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Empty State -->
+                <div class="text-center py-5" th:if="${#lists.isEmpty(learningPaths.content)}">
+                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No learning paths found</h4>
+                    <p class="text-muted mb-4">Try adjusting your search criteria or create a new learning path.</p>
+                    <a th:href="@{/learning-paths/create}" class="btn btn-primary" sec:authorize="hasRole('USER') or hasRole('ADMIN')">
+                        <i class="fas fa-plus me-2"></i>Create Learning Path
+                    </a>
+                </div>
+                
+                <!-- Pagination -->
+                <nav th:if="${totalPages > 1}" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" 
+                               th:href="@{/learning-paths(page=${currentPage - 1}, search=${search}, difficulty=${selectedDifficulty}, tag=${selectedTag}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                                Previous
+                            </a>
+                        </li>
+                        
+                        <!-- Page Numbers -->
+                        <li class="page-item" 
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" 
+                               th:href="@{/learning-paths(page=${i}, search=${search}, difficulty=${selectedDifficulty}, tag=${selectedTag}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+                        
+                        <!-- Next -->
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" 
+                               th:href="@{/learning-paths(page=${currentPage + 1}, search=${search}, difficulty=${selectedDifficulty}, tag=${selectedTag}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <script>
+            function updateSort(direction) {
+                const url = new URL(window.location);
+                url.searchParams.set('sortDir', direction);
+                window.location.href = url.toString();
+            }
+        </script>
+    </th:block>
+</body>
+</html>

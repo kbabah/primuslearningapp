@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="layout :: html">
+<head>
+    <title th:text="${learningPath.title} + ' - PrimusLearning'">Learning Path - PrimusLearning</title>
+</head>
+<body>
+    <main th:fragment="content" class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <!-- Header -->
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <div>
+                                    <h1 class="h3 mb-2" th:text="${learningPath.title}">Learning Path Title</h1>
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <span class="badge" 
+                                              th:classappend="'difficulty-' + ${learningPath.difficulty}"
+                                              th:text="${learningPath.difficulty}">Beginner</span>
+                                        <span class="badge" 
+                                              th:classappend="'status-' + ${learningPath.status}"
+                                              th:text="${learningPath.status}">Published</span>
+                                        <span class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>
+                                            <span th:text="${learningPath.formattedDuration}">40 hours</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="dropdown" sec:authorize="isAuthenticated()">
+                                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li th:if="${isOwner}">
+                                            <a class="dropdown-item" th:href="@{/learning-paths/edit/{id}(id=${learningPath.id})}">
+                                                <i class="fas fa-edit me-2"></i>Edit
+                                            </a>
+                                        </li>
+                                        <li th:if="${isOwner}">
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li th:if="${isOwner}">
+                                            <form th:action="@{/learning-paths/delete/{id}(id=${learningPath.id})}" method="post" class="d-inline">
+                                                <button type="submit" class="dropdown-item text-danger" 
+                                                        onclick="return confirm('Are you sure you want to delete this learning path?')">
+                                                    <i class="fas fa-trash me-2"></i>Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Description -->
+                            <div class="mb-4">
+                                <h5>About this Learning Path</h5>
+                                <p th:text="${learningPath.description}">Learning path description goes here...</p>
+                            </div>
+                            
+                            <!-- Tags -->
+                            <div class="mb-4" th:if="${not #lists.isEmpty(learningPath.tags)}">
+                                <h6>Tags</h6>
+                                <div>
+                                    <span class="badge bg-light text-dark me-2 mb-2" 
+                                          th:each="tag : ${learningPath.tags}" 
+                                          th:text="${tag}">Tag</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Creator Info -->
+                            <div class="mb-4">
+                                <h6>Created by</h6>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-3">
+                                        <span class="text-white small" th:text="${#strings.substring(learningPath.creator.firstName, 0, 1) + #strings.substring(learningPath.creator.lastName, 0, 1)}">AB</span>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0" th:text="${learningPath.creator.fullName}">Creator Name</h6>
+                                        <small class="text-muted">
+                                            Created on <span th:text="${#temporals.format(learningPath.createdAt, 'MMM dd, yyyy')}">Jan 01, 2023</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card mt-4 sticky-top" style="top: 20px;">
+                        <div class="card-body text-center">
+                            <!-- Enrollment Status -->
+                            <div th:if="${learningPath.status.toString() == 'PUBLISHED'}" sec:authorize="isAuthenticated()">
+                                <div th:if="${not isEnrolled}">
+                                    <h5 class="mb-3">Ready to start learning?</h5>
+                                    <form th:action="@{/learning-paths/enroll/{id}(id=${learningPath.id})}" method="post">
+                                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                                            <i class="fas fa-bookmark me-2"></i>Enroll Now
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <div th:if="${isEnrolled}">
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle me-2"></i>You're enrolled!
+                                    </div>
+                                    <form th:action="@{/learning-paths/unenroll/{id}(id=${learningPath.id})}" method="post">
+                                        <button type="submit" class="btn btn-outline-danger w-100 mb-3">
+                                            <i class="fas fa-times me-2"></i>Unenroll
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Not published -->
+                            <div th:if="${learningPath.status.toString() != 'PUBLISHED'}">
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    This learning path is not yet published.
+                                </div>
+                            </div>
+                            
+                            <!-- Not authenticated -->
+                            <div sec:authorize="!isAuthenticated()" th:if="${learningPath.status.toString() == 'PUBLISHED'}">
+                                <h5 class="mb-3">Ready to start learning?</h5>
+                                <a th:href="@{/login}" class="btn btn-primary btn-lg w-100 mb-2">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login to Enroll
+                                </a>
+                                <a th:href="@{/register}" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
+                                </a>
+                            </div>
+                            
+                            <!-- Stats -->
+                            <div class="row g-2 mt-3">
+                                <div class="col-6">
+                                    <div class="bg-light rounded p-3">
+                                        <h6 class="mb-0" th:text="${learningPath.enrollmentCount}">0</h6>
+                                        <small class="text-muted">Enrolled</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="bg-light rounded p-3">
+                                        <h6 class="mb-0" th:text="${learningPath.estimatedDurationHours}">40</h6>
+                                        <small class="text-muted">Hours</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Learning Path Details -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Details
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-2 text-center">
+                                <div class="col-12 mb-2">
+                                    <strong>Difficulty Level</strong>
+                                    <br>
+                                    <span class="badge mt-1" 
+                                          th:classappend="'difficulty-' + ${learningPath.difficulty}"
+                                          th:text="${learningPath.difficulty}">Beginner</span>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <strong>Last Updated</strong>
+                                    <br>
+                                    <small class="text-muted" th:text="${#temporals.format(learningPath.updatedAt, 'MMM dd, yyyy')}">Jan 01, 2023</small>
+                                </div>
+                                <div class="col-12" th:if="${not #lists.isEmpty(learningPath.tags)}">
+                                    <strong>Related Topics</strong>
+                                    <br>
+                                    <div class="mt-2">
+                                        <span class="badge bg-light text-dark me-1 mb-1" 
+                                              th:each="tag : ${learningPath.tags}" 
+                                              th:text="${tag}">Tag</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Back to Learning Paths -->
+            <div class="mt-4 mb-4">
+                <a th:href="@{/learning-paths}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Learning Paths
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

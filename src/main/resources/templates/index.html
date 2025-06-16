@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title th:text="'Home - PrimusLearning'">Home - PrimusLearning</title>
+</head>
+<body>
+    <div th:fragment="content" class="main-content">
+        <!-- Hero Section -->
+        <section class="bg-primary text-white py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="display-4 fw-bold mb-4">Master New Skills with Personalized Learning Paths</h1>
+                        <p class="lead mb-4">
+                            Discover curated learning experiences designed to help you achieve your goals. 
+                            From programming to data science, find the perfect path for your journey.
+                        </p>
+                        <div class="d-flex gap-3">
+                            <a th:href="@{/learning-paths}" class="btn btn-light btn-lg">
+                                <i class="fas fa-book me-2"></i>Explore Learning Paths
+                            </a>
+                            <a th:href="@{/register}" class="btn btn-outline-light btn-lg" sec:authorize="!isAuthenticated()">
+                                <i class="fas fa-user-plus me-2"></i>Get Started
+                            </a>
+                            <a th:href="@{/dashboard}" class="btn btn-outline-light btn-lg" sec:authorize="isAuthenticated()">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <i class="fas fa-graduation-cap display-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-lg-8 mx-auto">
+                        <h2 class="h1 mb-3">Why Choose PrimusLearning?</h2>
+                        <p class="lead text-muted">
+                            Our platform offers a comprehensive learning experience tailored to your needs.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <i class="fas fa-route fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title">Personalized Paths</h5>
+                                <p class="card-text">
+                                    Customized learning journeys based on your skill level and goals.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <i class="fas fa-users fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title">Expert Community</h5>
+                                <p class="card-text">
+                                    Learn from industry professionals and connect with fellow learners.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <i class="fas fa-trophy fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title">Track Progress</h5>
+                                <p class="card-text">
+                                    Monitor your learning progress and celebrate achievements.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Popular Learning Paths Section -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="row text-center mb-5">
+                    <div class="col-lg-8 mx-auto">
+                        <h2 class="h1 mb-3">Popular Learning Paths</h2>
+                        <p class="lead text-muted">
+                            Discover the most popular courses and start your learning journey today.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card learning-path-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fab fa-java fa-2x text-primary me-3"></i>
+                                    <h6 class="card-title mb-0">Java Development</h6>
+                                </div>
+                                <p class="card-text small text-muted">
+                                    Master Java programming from basics to advanced concepts.
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge difficulty-BEGINNER">Beginner</span>
+                                    <small class="text-muted">40 hours</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card learning-path-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fab fa-react fa-2x text-primary me-3"></i>
+                                    <h6 class="card-title mb-0">Frontend Development</h6>
+                                </div>
+                                <p class="card-text small text-muted">
+                                    Build modern web applications with React and modern tools.
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge difficulty-BEGINNER">Beginner</span>
+                                    <small class="text-muted">50 hours</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card learning-path-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fab fa-python fa-2x text-primary me-3"></i>
+                                    <h6 class="card-title mb-0">Data Science</h6>
+                                </div>
+                                <p class="card-text small text-muted">
+                                    Dive into data science with Python and machine learning.
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge difficulty-ADVANCED">Advanced</span>
+                                    <small class="text-muted">60 hours</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card learning-path-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-server fa-2x text-primary me-3"></i>
+                                    <h6 class="card-title mb-0">DevOps</h6>
+                                </div>
+                                <p class="card-text small text-muted">
+                                    Learn DevOps practices with Docker, Kubernetes, and CI/CD.
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge difficulty-INTERMEDIATE">Intermediate</span>
+                                    <small class="text-muted">45 hours</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-5">
+                    <a th:href="@{/learning-paths}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-arrow-right me-2"></i>View All Learning Paths
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CTA Section -->
+        <section class="py-5" sec:authorize="!isAuthenticated()">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h2 class="h1 mb-4">Ready to Start Learning?</h2>
+                        <p class="lead mb-4">
+                            Join thousands of learners who have transformed their careers with PrimusLearning.
+                        </p>
+                        <a th:href="@{/register}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </a>
+                        <a th:href="@{/learning-paths}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>Browse Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Edit Learning Path - PrimusLearning</title>
+</head>
+<body>
+    <div th:fragment="content" class="main-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                <i class="fas fa-edit me-2"></i>Edit Learning Path
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{'/learning-paths/edit/' + ${learningPathDto.id}}" method="post" th:object="${learningPathDto}">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" 
+                                           th:field="*{title}"
+                                           th:class="${#fields.hasErrors('title')} ? 'form-control is-invalid' : 'form-control'"
+                                           placeholder="Enter learning path title" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" rows="4" 
+                                              th:field="*{description}"
+                                              th:class="${#fields.hasErrors('description')} ? 'form-control is-invalid' : 'form-control'"
+                                              placeholder="Describe what learners will gain from this path" required></textarea>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="estimatedDurationHours" class="form-label">Duration (Hours) <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" min="1" 
+                                                   th:field="*{estimatedDurationHours}"
+                                                   th:class="${#fields.hasErrors('estimatedDurationHours')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="40" required>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('estimatedDurationHours')}" th:errors="*{estimatedDurationHours}"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="difficulty" class="form-label">Difficulty Level</label>
+                                            <select class="form-select" th:field="*{difficulty}">
+                                                <option th:each="diff : ${difficulties}" 
+                                                        th:value="${diff}" 
+                                                        th:text="${diff}"
+                                                        th:selected="${diff == learningPathDto.difficulty}">Beginner</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label">Status</label>
+                                            <select class="form-select" th:field="*{status}">
+                                                <option th:each="stat : ${statuses}" 
+                                                        th:value="${stat}" 
+                                                        th:text="${stat}"
+                                                        th:selected="${stat == learningPathDto.status}">Draft</option>
+                                            </select>
+                                            <div class="form-text">Published paths are visible to all users</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="tags" class="form-label">Tags</label>
+                                    <input type="text" class="form-control" 
+                                           th:field="*{tags}"
+                                           placeholder="Enter tags separated by commas (e.g., java, programming, backend)">
+                                    <div class="form-text">Add relevant tags to help others discover your learning path</div>
+                                </div>
+                                
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Update Learning Path
+                                    </button>
+                                    <a th:href="@{'/learning-paths/' + ${learningPathDto.id}}" class="btn btn-secondary">
+                                        <i class="fas fa-times me-2"></i>Cancel
+                                    </a>
+                                    <a th:href="@{/learning-paths/my-paths}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to My Paths
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

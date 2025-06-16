@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>My Learning Paths - PrimusLearning</title>
+</head>
+<body>
+    <div th:fragment="content" class="main-content">
+        <div class="container-fluid">
+            <div class="py-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 mb-1">My Learning Paths</h1>
+                        <p class="text-muted mb-0">Manage the learning paths you've created.</p>
+                    </div>
+                    <div>
+                        <a th:href="@{/learning-paths/create}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create New Path
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-folder fa-2x text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="card-title mb-1">Total Paths</h6>
+                                        <h4 class="mb-0" th:text="${totalElements}">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-eye fa-2x text-success"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="card-title mb-1">Published</h6>
+                                        <h4 class="mb-0" th:text="${#lists.size(learningPaths.content.?[status.toString() == 'PUBLISHED'])}">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-edit fa-2x text-warning"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="card-title mb-1">Drafts</h6>
+                                        <h4 class="mb-0" th:text="${#lists.size(learningPaths.content.?[status.toString() == 'DRAFT'])}">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-users fa-2x text-info"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="card-title mb-1">Total Enrollments</h6>
+                                        <h4 class="mb-0" th:text="${#aggregates.sum(learningPaths.content.![enrollmentCount])}">0</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Learning Paths Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Your Learning Paths
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${not #lists.isEmpty(learningPaths.content)}">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Difficulty</th>
+                                            <th>Duration</th>
+                                            <th>Enrollments</th>
+                                            <th>Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="learningPath : ${learningPaths.content}">
+                                            <td>
+                                                <a th:href="@{/learning-paths/{id}(id=${learningPath.id})}" 
+                                                   class="text-decoration-none fw-semibold" 
+                                                   th:text="${learningPath.title}">Learning Path Title</a>
+                                                <br>
+                                                <small class="text-muted" th:text="${#strings.abbreviate(learningPath.description, 80)}">Description</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge" 
+                                                      th:classappend="'status-' + ${learningPath.status}"
+                                                      th:text="${learningPath.status}">Status</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge" 
+                                                      th:classappend="'difficulty-' + ${learningPath.difficulty}"
+                                                      th:text="${learningPath.difficulty}">Difficulty</span>
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-clock me-1 text-muted"></i>
+                                                <span th:text="${learningPath.formattedDuration}">40 hours</span>
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-users me-1 text-muted"></i>
+                                                <span th:text="${learningPath.enrollmentCount}">0</span>
+                                            </td>
+                                            <td>
+                                                <span th:text="${#temporals.format(learningPath.createdAt, 'MMM dd, yyyy')}">Jan 01, 2023</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <a th:href="@{/learning-paths/{id}(id=${learningPath.id})}" 
+                                                       class="btn btn-outline-primary" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a th:href="@{/learning-paths/edit/{id}(id=${learningPath.id})}" 
+                                                       class="btn btn-outline-secondary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-outline-danger" 
+                                                            th:onclick="|confirmDelete('${learningPath.id}', '${learningPath.title}')|" 
+                                                            title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div th:if="${#lists.isEmpty(learningPaths.content)}" class="text-center py-5">
+                            <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Learning Paths Created Yet</h4>
+                            <p class="text-muted mb-4">Start creating learning paths to share your knowledge with others.</p>
+                            <a th:href="@{/learning-paths/create}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create Your First Learning Path
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <nav th:if="${totalPages > 1}" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" 
+                               th:href="@{/learning-paths/my-paths(page=${currentPage - 1})}">
+                                Previous
+                            </a>
+                        </li>
+                        
+                        <!-- Page Numbers -->
+                        <li class="page-item" 
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" 
+                               th:href="@{/learning-paths/my-paths(page=${i})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+                        
+                        <!-- Next -->
+                        <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                            <a class="page-link" 
+                               th:href="@{/learning-paths/my-paths(page=${currentPage + 1})}">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the learning path "<span id="deleteTitle"></span>"?</p>
+                    <p class="text-danger small">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <script>
+            function confirmDelete(id, title) {
+                document.getElementById('deleteTitle').textContent = title;
+                document.getElementById('deleteForm').action = '/learning-paths/delete/' + id;
+                new bootstrap.Modal(document.getElementById('deleteModal')).show();
+            }
+        </script>
+    </th:block>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Register - PrimusLearning</title>
+</head>
+<body>
+    <div th:fragment="content" class="main-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card mt-5">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/register}" method="post" th:object="${userRegistration}">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" 
+                                                   th:field="*{firstName}"
+                                                   th:class="${#fields.hasErrors('firstName')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="Enter your first name" required>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" 
+                                                   th:field="*{lastName}"
+                                                   th:class="${#fields.hasErrors('lastName')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="Enter your last name" required>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" 
+                                           th:field="*{username}"
+                                           th:class="${#fields.hasErrors('username')} ? 'form-control is-invalid' : 'form-control'"
+                                           placeholder="Choose a unique username" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                                    <div class="form-text">Username must be 3-50 characters long.</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" 
+                                           th:field="*{email}"
+                                           th:class="${#fields.hasErrors('email')} ? 'form-control is-invalid' : 'form-control'"
+                                           placeholder="Enter your email address" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                            <input type="password" class="form-control" 
+                                                   th:field="*{password}"
+                                                   th:class="${#fields.hasErrors('password')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="Create a password" required>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                                            <div class="form-text">Password must be at least 6 characters long.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="confirmPassword" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                            <input type="password" class="form-control" 
+                                                   th:field="*{confirmPassword}"
+                                                   th:class="${#fields.hasErrors('confirmPassword')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="Confirm your password" required>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
+                                        and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                    </label>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
+                                </button>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center">
+                            <p class="mb-0">
+                                Already have an account? 
+                                <a th:href="@{/login}" class="text-decoration-none">Sign in here</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <script>
+            // Password confirmation validation
+            document.addEventListener('DOMContentLoaded', function() {
+                const password = document.getElementById('password');
+                const confirmPassword = document.getElementById('confirmPassword');
+                
+                function validatePassword() {
+                    if (password.value !== confirmPassword.value) {
+                        confirmPassword.setCustomValidity("Passwords don't match");
+                    } else {
+                        confirmPassword.setCustomValidity('');
+                    }
+                }
+                
+                password.addEventListener('change', validatePassword);
+                confirmPassword.addEventListener('keyup', validatePassword);
+            });
+        </script>
+    </th:block>
+</body>
+</html>

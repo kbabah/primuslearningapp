@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Login - PrimusLearning</title>
+</head>
+<body>
+    <div th:fragment="content" class="main-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card mt-5">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Login Error -->
+                            <div class="alert alert-danger" th:if="${param.error}">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                Invalid username or password.
+                            </div>
+                            
+                            <!-- Logout Success -->
+                            <div class="alert alert-success" th:if="${param.logout}">
+                                <i class="fas fa-check-circle me-2"></i>
+                                You have been logged out successfully.
+                            </div>
+                            
+                            <!-- Registration Success -->
+                            <div class="alert alert-success" th:if="${success}">
+                                <i class="fas fa-check-circle me-2"></i>
+                                <span th:text="${success}"></span>
+                            </div>
+                            
+                            <form th:action="@{/login}" method="post">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username or Email</label>
+                                    <input type="text" class="form-control" id="username" name="username" 
+                                           placeholder="Enter your username or email" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" 
+                                           placeholder="Enter your password" required>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                                    <label class="form-check-label" for="remember-me">
+                                        Remember me
+                                    </label>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                </button>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center">
+                            <p class="mb-0">
+                                Don't have an account? 
+                                <a th:href="@{/register}" class="text-decoration-none">Sign up here</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Demo Accounts Info -->
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Demo Accounts
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h6 class="text-muted">Admin:</h6>
+                                    <p class="mb-0 small">
+                                        <strong>Username:</strong> admin<br>
+                                        <strong>Password:</strong> admin123
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <h6 class="text-muted">User:</h6>
+                                    <p class="mb-0 small">
+                                        <strong>Username:</strong> demo<br>
+                                        <strong>Password:</strong> demo123
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

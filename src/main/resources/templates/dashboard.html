@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Dashboard - PrimusLearning</title>
+</head>
+<body>
+    <div th:fragment="content" class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 col-lg-2 p-0">
+                    <div class="sidebar">
+                        <div class="p-3">
+                            <h6 class="text-muted text-uppercase small">Navigation</h6>
+                            <nav class="nav flex-column">
+                                <a class="nav-link active" href="#overview">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Overview
+                                </a>
+                                <a class="nav-link" th:href="@{/learning-paths/my-paths}">
+                                    <i class="fas fa-folder me-2"></i>My Learning Paths
+                                </a>
+                                <a class="nav-link" th:href="@{/learning-paths/my-enrollments}">
+                                    <i class="fas fa-bookmark me-2"></i>My Enrollments
+                                </a>
+                                <a class="nav-link" th:href="@{/learning-paths/create}">
+                                    <i class="fas fa-plus me-2"></i>Create Learning Path
+                                </a>
+                                <a class="nav-link" th:href="@{/learning-paths}">
+                                    <i class="fas fa-search me-2"></i>Browse All Paths
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="col-md-9 col-lg-10">
+                    <div class="p-4">
+                        <!-- Welcome Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h1 class="h3 mb-1">Welcome back, <span sec:authentication="principal.firstName">User</span>!</h1>
+                                <p class="text-muted mb-0">Here's your learning overview for today.</p>
+                            </div>
+                            <div>
+                                <a th:href="@{/learning-paths/create}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Create Learning Path
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Stats -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <i class="fas fa-folder fa-2x text-primary"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="card-title mb-1">Created Paths</h6>
+                                                <h4 class="mb-0" id="createdPathsCount">-</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <i class="fas fa-bookmark fa-2x text-success"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="card-title mb-1">Enrollments</h6>
+                                                <h4 class="mb-0" id="enrollmentsCount">-</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <i class="fas fa-clock fa-2x text-warning"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="card-title mb-1">Hours Planned</h6>
+                                                <h4 class="mb-0" id="hoursCount">-</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <i class="fas fa-trophy fa-2x text-info"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="card-title mb-1">Achievements</h6>
+                                                <h4 class="mb-0">3</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Activity -->
+                        <div class="row g-4">
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-history me-2"></i>Recent Activity
+                                        </h5>
+                                        <a th:href="@{/learning-paths}" class="btn btn-sm btn-outline-primary">View All</a>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center">
+                                                    <i class="fas fa-plus text-white small"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Welcome to PrimusLearning!</h6>
+                                                <p class="text-muted mb-0">Start by exploring learning paths or creating your own.</p>
+                                                <small class="text-muted">Just now</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="text-center py-4">
+                                            <i class="fas fa-rocket fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Your learning journey starts here!</p>
+                                            <a th:href="@{/learning-paths}" class="btn btn-primary">
+                                                <i class="fas fa-search me-2"></i>Explore Learning Paths
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-chart-line me-2"></i>Quick Actions
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <a th:href="@{/learning-paths/create}" class="btn btn-outline-primary">
+                                                <i class="fas fa-plus me-2"></i>Create Learning Path
+                                            </a>
+                                            <a th:href="@{/learning-paths}" class="btn btn-outline-success">
+                                                <i class="fas fa-search me-2"></i>Browse Paths
+                                            </a>
+                                            <a th:href="@{/learning-paths/my-enrollments}" class="btn btn-outline-info">
+                                                <i class="fas fa-bookmark me-2"></i>My Enrollments
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Learning Tips -->
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-lightbulb me-2"></i>Learning Tips
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <small>Set realistic learning goals</small>
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <small>Practice regularly</small>
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <small>Track your progress</small>
+                                            </li>
+                                            <li class="mb-0">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <small>Join community discussions</small>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <script>
+            // Simulate loading stats (in a real app, this would come from the server)
+            document.addEventListener('DOMContentLoaded', function() {
+                // Simulate API calls to get user stats
+                setTimeout(() => {
+                    document.getElementById('createdPathsCount').textContent = '0';
+                    document.getElementById('enrollmentsCount').textContent = '0';
+                    document.getElementById('hoursCount').textContent = '0';
+                }, 500);
+            });
+        </script>
+    </th:block>
+</body>
+</html>

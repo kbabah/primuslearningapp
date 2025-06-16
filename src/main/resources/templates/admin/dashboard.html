@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::content})}">
+<head>
+    <title>Admin Dashboard - PrimusLearning</title>
+</head>
+<body>
+    <div th:fragment="content" class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Main Content -->
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="h3 mb-0">Admin Dashboard</h1>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/admin/users}" class="btn btn-outline-primary">
+                                <i class="fas fa-users me-1"></i>Manage Users
+                            </a>
+                            <a th:href="@{/admin/learning-paths}" class="btn btn-outline-primary">
+                                <i class="fas fa-book me-1"></i>Manage Learning Paths
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-primary text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="card-title mb-1">Total Users</h6>
+                                            <h3 class="mb-0" th:text="${totalUsers}">0</h3>
+                                        </div>
+                                        <div class="text-white-50">
+                                            <i class="fas fa-users fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-success text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="card-title mb-1">Learning Paths</h6>
+                                            <h3 class="mb-0" th:text="${totalLearningPaths}">0</h3>
+                                        </div>
+                                        <div class="text-white-50">
+                                            <i class="fas fa-book fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-warning text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="card-title mb-1">Admins</h6>
+                                            <h3 class="mb-0" th:text="${adminCount}">0</h3>
+                                        </div>
+                                        <div class="text-white-50">
+                                            <i class="fas fa-crown fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="card border-0 bg-info text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="card-title mb-1">Regular Users</h6>
+                                            <h3 class="mb-0" th:text="${userCount}">0</h3>
+                                        </div>
+                                        <div class="text-white-50">
+                                            <i class="fas fa-user fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Data -->
+                    <div class="row g-4">
+                        <!-- Recent Users -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Recent Users</h5>
+                                    <a th:href="@{/admin/users}" class="btn btn-sm btn-outline-primary">View All</a>
+                                </div>
+                                <div class="card-body">
+                                    <div th:if="${#lists.isEmpty(recentUsers)}" class="text-center text-muted py-3">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <p class="mb-0">No users yet</p>
+                                    </div>
+                                    <div th:if="${not #lists.isEmpty(recentUsers)}">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Role</th>
+                                                        <th>Created</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="user : ${recentUsers}">
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                                    <span th:text="${#strings.substring(user.firstName, 0, 1)}">U</span>
+                                                                </div>
+                                                                <div>
+                                                                    <div class="fw-medium" th:text="${user.fullName}">User Name</div>
+                                                                    <small class="text-muted" th:text="${user.email}">user@email.com</small>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge" 
+                                                                  th:classappend="${user.role == T(com.primuslearning.entity.User.Role).ADMIN} ? 'bg-danger' : 'bg-primary'"
+                                                                  th:text="${user.role}">USER</span>
+                                                        </td>
+                                                        <td>
+                                                            <small th:text="${#temporals.format(user.createdAt, 'MMM dd, yyyy')}">Jan 01, 2023</small>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Learning Paths -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Recent Learning Paths</h5>
+                                    <a th:href="@{/admin/learning-paths}" class="btn btn-sm btn-outline-primary">View All</a>
+                                </div>
+                                <div class="card-body">
+                                    <div th:if="${#lists.isEmpty(recentLearningPaths)}" class="text-center text-muted py-3">
+                                        <i class="fas fa-book fa-2x mb-2"></i>
+                                        <p class="mb-0">No learning paths yet</p>
+                                    </div>
+                                    <div th:if="${not #lists.isEmpty(recentLearningPaths)}">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Title</th>
+                                                        <th>Status</th>
+                                                        <th>Created</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="learningPath : ${recentLearningPaths}">
+                                                        <td>
+                                                            <div>
+                                                                <div class="fw-medium" th:text="${learningPath.title}">Learning Path Title</div>
+                                                                <small class="text-muted" th:text="${#strings.abbreviate(learningPath.description, 50)}">Description...</small>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge" 
+                                                                  th:classappend="'status-' + ${learningPath.status}"
+                                                                  th:text="${learningPath.status}">PUBLISHED</span>
+                                                        </td>
+                                                        <td>
+                                                            <small th:text="${#temporals.format(learningPath.createdAt, 'MMM dd, yyyy')}">Jan 01, 2023</small>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Quick Actions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <a th:href="@{/admin/users/create}" class="btn btn-outline-primary w-100">
+                                                <i class="fas fa-user-plus d-block mb-2 fa-2x"></i>
+                                                Create User
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a th:href="@{/learning-paths/create}" class="btn btn-outline-success w-100">
+                                                <i class="fas fa-plus d-block mb-2 fa-2x"></i>
+                                                Create Learning Path
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a th:href="@{/admin/users}" class="btn btn-outline-info w-100">
+                                                <i class="fas fa-users d-block mb-2 fa-2x"></i>
+                                                Manage Users
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a th:href="@{/admin/learning-paths}" class="btn btn-outline-warning w-100">
+                                                <i class="fas fa-book d-block mb-2 fa-2x"></i>
+                                                Manage Learning Paths
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:fragment="scripts">
+        <style>
+            .avatar-sm {
+                width: 32px;
+                height: 32px;
+                font-size: 0.875rem;
+            }
+            
+            .status-PUBLISHED {
+                background-color: #198754;
+                color: white;
+            }
+            
+            .status-DRAFT {
+                background-color: #ffc107;
+                color: #000;
+            }
+            
+            .status-ARCHIVED {
+                background-color: #6c757d;
+                color: white;
+            }
+        </style>
+    </th:block>
+</body>
+</html>
