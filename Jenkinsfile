@@ -13,7 +13,12 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/kbabah/primuslearningapp.git'
             }
         }
-    
+        
+        stage('Test') {
+            steps {
+                sh "mvn test"
+            }
+        }
 
         stage('Build') {
             steps {
@@ -21,14 +26,16 @@ pipeline {
         }
     }
 
-        stage("build & SonarQube analysis") {
-            steps {
-                withSonarQubeEnv('sonaqube') {
-                sh 'mvn sonar:sonar'
-              }
-            }
-          }
+        // stage("SonarQube analysis") {
+        //     steps {
+        //         withSonarQubeEnv('sonaqube') {
+        //         sh 'mvn sonar:sonar'
+        //       }
+        //     }
+        //   }
 
- }
+        
+
+  }
 
 }
