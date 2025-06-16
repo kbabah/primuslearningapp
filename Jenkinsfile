@@ -8,10 +8,10 @@ pipeline {
     }
 
     stages {
-        stage('Git Pull') {
+        stage ('Git Checkout') {
             steps {
-      // One or more steps need to be included within the steps block.
-         git 'https://github.com/kbabah/primuslearningapp.git'
+                git branch: 'main', url: 'https://github.com/kbabah/primuslearningapp.git'
+            }
         }
     }
 
