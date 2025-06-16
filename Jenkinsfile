@@ -20,7 +20,7 @@ pipeline {
 
   stage('Build') {
     steps {
-        sh "mvn package"
+        sh "mvn clean compile"
       // One or more steps need to be included within the steps block.
     }
   }
