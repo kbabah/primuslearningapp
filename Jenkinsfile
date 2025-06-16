@@ -13,7 +13,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/kbabah/primuslearningapp.git'
             }
         }
-    }
+    
 
         stage('Build') {
             steps {
@@ -31,3 +31,4 @@ pipeline {
 
  }
 
+}
