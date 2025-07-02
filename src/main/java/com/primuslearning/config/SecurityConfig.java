@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
 import java.util.Arrays;
@@ -36,9 +37,6 @@ public class SecurityConfig {
     
     @Value("${security.headers.content-security-policy:default-src 'self'}")
     private String contentSecurityPolicy;
-    
-    @Value("${security.headers.referrer-policy:same-origin}")
-    private String referrerPolicy;
     
     @Autowired
     public SecurityConfig(UserService userService, PasswordEncoder passwordEncoder, Environment environment) {
@@ -114,7 +112,7 @@ public class SecurityConfig {
             .headers(headers -> {
                 // Configure security headers
                 headers.contentSecurityPolicy(csp -> csp.policyDirectives(contentSecurityPolicy));
-                headers.referrerPolicy(referrer -> referrer.policy(referrerPolicy));
+                headers.referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN);
                 headers.xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK));
                 headers.contentTypeOptions(contentType -> {});
                 
