@@ -161,6 +161,9 @@ node_modules/
 /logs/
 /data/
 
+Dockerfile
+
+target
 .github/*
 
 test_endpoint.py
