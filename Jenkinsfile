@@ -58,8 +58,8 @@ pipeline {
         stage("docker Build") {
             steps {
                 sh 'docker build -t pl-app .'
-                
-
+            }
+        }
     }
 }
 
