@@ -1,4 +1,9 @@
 pipeline {
+    environment { 
+        registry = "babahdev/primuslearningapp" 
+        registryCredential = 'dockerhub' 
+        dockerImage = '' 
+    }
     
     agent any
         
@@ -56,8 +61,22 @@ pipeline {
 
         stage('Docker Image Build')  {
             steps {
-                sh 'docker build -t pl-app.v1 .'
+                dockerImage = docker.build registry + ":$BUILD_NUMBER" 
             }
+        stage('Deploy our image') { 
+            steps { 
+                script { 
+                    docker.withRegistry( '', registryCredential ) { 
+                        dockerImage.push() 
+                    }
+               } 
+            }
+        } 
+        stage('Cleaning up') { 
+            steps { 
+                sh "docker rmi $registry:$BUILD_NUMBER" 
+            }
+        } 
         
       }
     }
