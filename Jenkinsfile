@@ -54,11 +54,6 @@ pipeline {
         //     }
         // }
 
-        stage("docker Build") {
-            steps {
-                script {
-                docker.build('pl-app')
-                }
             }
         }
     }
