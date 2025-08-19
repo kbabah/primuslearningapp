@@ -4,6 +4,7 @@ pipeline {
         
     tools {
         maven 'Maven-3.9.9'
+        dockerTool 'docker'
     }
 
     environment {
@@ -40,19 +41,24 @@ pipeline {
         //             archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         //         }
         //     }
+        // 
+
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         withSonarQubeEnv('sonaqube') {
+        //             sh '''
+        //                 mvn sonar:sonar \
+        //                 -Dsonar.projectKey=web-app \
+        //                 -Dsonar.java.jvmArgs="--add-opens java.base/java.lang=ALL-UNNAMED"
+        //             '''
+        //         }
+        //     }
         // }
 
-        stage('SonarQube Analysis') {
+        stage("docker Build") {
             steps {
-                withSonarQubeEnv('sonaqube') {
-                    sh '''
-                        mvn sonar:sonar \
-                        -Dsonar.projectKey=web-app \
-                        -Dsonar.java.jvmArgs="--add-opens java.base/java.lang=ALL-UNNAMED"
-                    '''
-                }
-            }
-        }
+                sh 'docker build -t pl-app .'
+                
 
     }
 }
