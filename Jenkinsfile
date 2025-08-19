@@ -1,10 +1,4 @@
-pipeline {
-    environment { 
-        registry = "babahdev/primuslearningapp" 
-        registryCredential = 'dockerhub' 
-        dockerImage = '' 
-    }
-    
+pipeline { 
     agent any
         
     tools {
@@ -12,6 +6,9 @@ pipeline {
     }
 
     environment {
+        registry = "babahdev/primuslearningapp" 
+        registryCredential = 'dockerhub' 
+        dockerImage = '' 
         // Add JVM arguments to fix Java module access issues for SonarQube
         MAVEN_OPTS = '--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED'
     }
@@ -61,8 +58,11 @@ pipeline {
 
         stage('Docker Image Build')  {
             steps {
+                script {
                 dockerImage = docker.build registry + ":$BUILD_NUMBER" 
+                }
             }
+        }
         stage('Deploy our image') { 
             steps { 
                 script { 
