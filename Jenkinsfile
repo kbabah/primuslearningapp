@@ -58,7 +58,7 @@ pipeline {
             steps {
                 sh 'docker build -t pl-app.v1 .'
             }
-        }
+        
       }
     }
 }
