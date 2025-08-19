@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        APPNAME = "babahdev/primuslearningapp" 
+        APP_NAME = "babahdev/primuslearningapp" 
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
         // Add JVM arguments to fix Java module access issues for SonarQube
         MAVEN_OPTS = '--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED'
