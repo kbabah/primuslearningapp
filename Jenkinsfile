@@ -54,8 +54,12 @@ pipeline {
         //     }
         // }
 
+        stage('Docker Image Build')  {
+            steps {
+                sh 'docker build -t pl-app.v1 .'
             }
         }
+      }
     }
 }
 
