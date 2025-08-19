@@ -7,9 +7,8 @@ pipeline {
     }
 
     environment {
-        registry = "babahdev/primuslearningapp" 
-        registryCredential = 'dockerhub' 
-        dockerImage = '' 
+        APPNAME = "babahdev/primuslearningapp" 
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
         // Add JVM arguments to fix Java module access issues for SonarQube
         MAVEN_OPTS = '--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED'
     }
@@ -59,25 +58,20 @@ pipeline {
 
         stage('Docker Image Build')  {
             steps {
-                script {
-                dockerImage = docker.build registry + ":$BUILD_NUMBER" 
-                }
+                sh 'docker build -t $APP_NAME:$BUILD_NUMBER .' 
             }
         }
-        stage('Deploy our image') { 
-            steps { 
-                script { 
-                    docker.withRegistry( '', registryCredential ) { 
-                        dockerImage.push() 
-                    }
-               } 
+        stage('login to dockerhub') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
-        } 
-        stage('Cleaning up') { 
-            steps { 
-                sh "docker rmi $registry:$BUILD_NUMBER" 
+        }
+        
+         stage('push image') {
+            steps {
+                sh 'docker push $APP_NAME:$BUILD_NUMBER'
             }
-        } 
+        }
         
       }
     }
